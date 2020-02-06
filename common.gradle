@@ -106,7 +106,7 @@ gradleLint {
 
   //Can be commented out after the first time it's run as it's useful, but it also doesn't recognise implementation, and
   //replaces with compile (and sets hard versions.) If they fix this then can be added to excludedRules
-  excludedRules += 'undeclared-dependency'
+  //excludedRules += 'undeclared-dependency'
 
   alwaysRun = false
 }
