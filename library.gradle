@@ -1,0 +1,35 @@
+apply plugin: 'ivy-publish'
+
+apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.java
+  classifier "sources"
+}
+
+// for publishing to an ivy repository
+publishing {
+  publications {
+    ivyJava(IvyPublication) {
+      from components.java
+
+      artifact(sourceJar) {
+        type 'sources'
+      }
+    }
+  }
+  repositories {
+    ivy {
+      credentials {
+        username "gradle"
+        password "${System.env.IVY_PASSWORD}"
+      }
+      url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local"
+      layout 'pattern' , {
+        m2compatible = true
+        artifact '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
+        ivy '[organisation]/[module]/[revision]/ivy-[revision].xml'
+      }
+    }
+  }
+}
