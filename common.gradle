@@ -46,6 +46,7 @@ repositories {
   }
   maven { url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release" }
   jcenter()
+  mavenCentral()
 }
 
 configurations {
