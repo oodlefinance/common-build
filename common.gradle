@@ -3,6 +3,7 @@ group = projectGroup
 if (project.hasProperty('projectVersion')) {
   version = projectVersion
 } else if (project.hasProperty('projectMajorVersion') && project.hasProperty('projectMinorVersion')) {
+  buildNumber = System.getenv()['buildNumber'] ?: '0'
   version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
   
   if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
