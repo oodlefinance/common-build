@@ -5,7 +5,6 @@ version = version ?: '1.0.0'
 archivesBaseName = projectName
 sourceCompatibility = 1.11
 jar.baseName = projectName
-mainClassName = projectMainClass
 
 sourceSets {
   acceptanceTest {
@@ -22,12 +21,6 @@ sourceSets {
       compileClasspath += main.output + test.output + configurations.testRuntime
       runtimeClasspath += output + compileClasspath
     }
-  }
-}
-
-jar {
-  manifest {
-    attributes 'Main-Class': mainClassName
   }
 }
 
@@ -78,13 +71,6 @@ task integrationTest(type: Test) {
   include '**/*'
   outputs.upToDateWhen { false }
 }
-
-task buildDocker(type: Exec) {
-  workingDir projectDir
-  commandLine 'sh', '-c', "docker/build.sh $projectName $projectVersion $projectMainClass"
-}
-
-buildDocker.dependsOn(distZip)
 
 dependencyUpdates.resolutionStrategy {
   componentSelection { rules ->

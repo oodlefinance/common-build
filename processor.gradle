@@ -1,0 +1,18 @@
+version = projectVersion
+
+apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+
+task buildDocker(type: Exec) {
+  workingDir projectDir
+  commandLine 'sh', '-c', "docker/build.sh $projectName $projectVersion $projectMainClass"
+}
+
+buildDocker.dependsOn(distZip)
+
+mainClassName = projectMainClass
+
+jar {
+  manifest {
+    attributes 'Main-Class': mainClassName
+  }
+}

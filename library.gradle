@@ -1,6 +1,10 @@
 apply plugin: 'ivy-publish'
 
-apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
+
+if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
+  version += "-$projectVersionLabel"
+}
 
 task sourceJar(type: Jar) {
   from sourceSets.main.java
