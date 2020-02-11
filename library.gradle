@@ -1,6 +1,5 @@
 apply plugin: 'ivy-publish'
 
-mainClassName = null
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
 if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
