@@ -7,6 +7,14 @@ task sourceJar(type: Jar) {
   classifier "sources"
 }
 
+if (projectMajorVersion && projectMinorVersion) {
+  version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
+  
+  if (buildNumber == '0' && projectVersionLabel) {
+    version += "-$projectVersionLabel"
+  }
+}
+
 // for publishing to an ivy repository
 publishing {
   publications {
