@@ -7,10 +7,10 @@ task sourceJar(type: Jar) {
   classifier "sources"
 }
 
-if (projectMajorVersion && projectMinorVersion) {
+if (project.hasProperty(projectMajorVersion) && project.hasProperty(projectMinorVersion)) {
   version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
   
-  if (buildNumber == '0' && projectVersionLabel) {
+  if (buildNumber == '0' && project.hasProperty(projectVersionLabel)) {
     version += "-$projectVersionLabel"
   }
 }
