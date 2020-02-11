@@ -6,6 +6,8 @@ if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
   version += "-$projectVersionLabel"
 }
 
+apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+
 task sourceJar(type: Jar) {
   from sourceSets.main.java
   classifier "sources"
