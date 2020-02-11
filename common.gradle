@@ -1,5 +1,17 @@
 group = projectGroup
-version = projectVersion
+
+if (project.hasProperty('projectVersion')) {
+  version = projectVersion
+} else if (project.hasProperty('projectMajorVersion') && project.hasProperty('projectMinorVersion')) {
+  version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
+  
+  if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
+    version += "-$projectVersionLabel"
+  }
+} else {
+  version = '1.0.0'
+}
+
 archivesBaseName = projectName
 sourceCompatibility = 1.11
 jar.baseName = projectName
