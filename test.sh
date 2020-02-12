@@ -1,2 +1,4 @@
-echo "Hello World"
-echo $"@"
+echo 'Hello World'
+echo $'@'
+echo $@
+echo $1
