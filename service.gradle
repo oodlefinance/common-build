@@ -1,0 +1,27 @@
+mainClassName = projectMainClass
+version = projectVersion
+
+apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+
+jar {
+  manifest {
+    attributes 'Main-Class': mainClassName
+  }
+}
+
+shadowJar {
+  classifier = 'fat'
+  manifest {
+    attributes "Main-Verticle": mainVerticleName
+  }
+
+  mergeServiceFiles {
+    include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+  }
+
+  mergeGroovyExtensionModules()
+}
+
+run {
+  args = ['run', mainVerticleName, "--launcher-class=$mainClassName", "-conf=dev-conf.json"]
+}
