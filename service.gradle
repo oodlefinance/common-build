@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 mainClassName = project.hasProperty(projectMainClass) ? project.property(projectMainClass) : 'com.carsnip.vertx.Launcher'
 version = projectVersion
 
