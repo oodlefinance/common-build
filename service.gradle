@@ -1,4 +1,4 @@
-mainClassName = projectMainClass
+mainClassName = project.hasProperty(projectMainClass) ? project.property(projectMainClass) : 'com.carsnip.vertx.Launcher'
 version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
