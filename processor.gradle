@@ -1,5 +1,6 @@
 apply plugin: 'application'
 
+mainClassName = projectMainClass
 version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
@@ -10,8 +11,6 @@ task buildDocker(type: Exec) {
 }
 
 buildDocker.dependsOn(distZip)
-
-mainClassName = projectMainClass
 
 jar {
   manifest {
