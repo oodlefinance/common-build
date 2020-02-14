@@ -17,11 +17,7 @@ jib {
     image = "$dockerRepo/$projectName:$dockerTag"
   }
   container {
-    jvmFlags = ['-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
+    jvmFlags = ["-Xmx${project.hasProperty('xmx') ? project.property('xmx') : '256m'}".toString(), '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
     mainClass = projectMainClass
   }
-}
-
-if (project.hasProperty('xmx')) {
-	jib.container.jvmFlags.add(0, '-Xmx' + project.property('xmx'))
 }
