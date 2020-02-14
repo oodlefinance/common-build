@@ -11,14 +11,17 @@ String dockerTag = project.hasProperty('tag') ? project.property('tag') : "test"
 
 jib {
   from {
-    image = "$dockerRepo/docker-java-11.0.5-jre:master-11".toString()
+    image = "$dockerRepo/docker-java-11.0.5-jre:master-11"
   }
   to {
-    image = "$dockerRepo/$projectName:$dockerTag".toString()
+    image = "$dockerRepo/$projectName:$dockerTag"
   }
   container {
-    jvmFlags = ['-Xmx1024m', '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
+    jvmFlags = ['-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
     mainClass = projectMainClass
-    ports = [jolokiaPort]
   }
+}
+
+if (project.hasProperty('xmx')) {
+	jib.container.jvmFlags.add(0, '-Xmx' + project.property('xmx'))
 }
