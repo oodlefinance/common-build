@@ -1,4 +1,5 @@
 apply plugin: 'ivy-publish'
+apply plugin: 'java-library'
 
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
