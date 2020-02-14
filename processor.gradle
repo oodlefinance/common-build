@@ -21,3 +21,9 @@ jib {
     mainClass = projectMainClass
   }
 }
+
+docker {
+  registryCredentials {
+    url = dockerRepo
+  }
+}
