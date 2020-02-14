@@ -11,7 +11,7 @@ String dockerTag = project.hasProperty('branchName') && project.hasProperty('bra
 
 jib {
   from {
-    image = "$dockerRepo/docker-java-11.0.5-jre:master-11".toString
+    image = "$dockerRepo/docker-java-11.0.5-jre:master-11".toString()
   }
   to {
     image = "$dockerRepo/$projectName:$dockerTag".toString()
