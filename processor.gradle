@@ -1,6 +1,6 @@
 apply plugin: 'application'
 
-mainClassName = projectMainClass
+mainClassName = projectMainClass //required by application plugin
 version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
