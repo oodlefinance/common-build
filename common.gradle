@@ -54,6 +54,7 @@ configurations {
   compile {
     exclude group: "commons-logging", module: "commons-logging"
     exclude group: "org.springframework", module: "spring-jcl"
+    exclude group: group:'com.carsnip', module:'carsnip-logging'
   }
   all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
