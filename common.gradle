@@ -52,7 +52,6 @@ repositories {
 
 configurations {
   compile {
-    exclude group: "commons-logging", module: "commons-logging"
     exclude group: "org.springframework", module: "spring-jcl"
   }
   all {
