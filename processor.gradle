@@ -11,7 +11,7 @@ String dockerTag = project.hasProperty('tag') ? project.property('tag') : "test"
 
 jib {
   from {
-    image = "$dockerRepo/docker-java-11.0.5-jre:master-11"
+    image = "$dockerRepo/docker-java-11.0.5-jre:master-12"
   }
   to {
     image = "$dockerRepo/$projectName:$dockerTag"
