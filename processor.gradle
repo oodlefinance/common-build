@@ -8,7 +8,7 @@ apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/commo
 String jolokiaPort = '7777'
 String dockerRepo = '963107833485.dkr.ecr.eu-west-1.amazonaws.com'
 String dockerTag = project.hasProperty('tag') ? project.property('tag') : 'test'
-String revision = project.hasProperty('Prevision') ? project.property('Prevision') : ''
+String revision = project.hasProperty('revision') ? project.property('revision') : ''
 String source = project.hasProperty('source') ? project.property('source') : ''
 String buildDate = project.hasProperty('buildDate') ? project.property('buildDate') : ''
 
