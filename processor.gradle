@@ -5,9 +5,12 @@ version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
 
-String jolokiaPort = "7777"
-String dockerRepo = "963107833485.dkr.ecr.eu-west-1.amazonaws.com"
-String dockerTag = project.hasProperty('tag') ? project.property('tag') : "test"
+String jolokiaPort = '7777'
+String dockerRepo = '963107833485.dkr.ecr.eu-west-1.amazonaws.com'
+String dockerTag = project.hasProperty('tag') ? project.property('tag') : 'test'
+String revision = project.hasProperty('Prevision') ? project.property('Prevision') : ''
+String source = project.hasProperty('source') ? project.property('source') : ''
+String buildDate = project.hasProperty('buildDate') ? project.property('buildDate') : ''
 
 jib {
   from {
@@ -19,5 +22,16 @@ jib {
   container {
     jvmFlags = ["-Xmx${project.hasProperty('xmx') ? project.property('xmx') : '256m'}".toString(), '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
     mainClass = projectMainClass
+    labels = [
+      'org.opencontainers.image.title': projectName,
+      'org.opencontainers.image.version': dockerTag,
+      'org.opencontainers.image.revision': revision,
+      'org.opencontainers.image.created': buildDate,
+      'org.opencontainers.image.source': source
+    ]
+    environment = [
+      'SERVICE_NAME': projectName,
+      'SERVICE_VERSION': dockerTag
+    ]
   }
 }
