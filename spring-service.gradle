@@ -1,0 +1,8 @@
+apply plugin: 'application'
+
+apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+
+bootJar {
+  mainClassName = "$projectMainClass"
+  archiveName = "$projectName-$projectVersion-fat.jar"
+}
