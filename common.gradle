@@ -43,10 +43,10 @@ distributions {
 repositories {
   // use our artifactory repository that proxies the other repositories such as maven central
   ivy {
-    url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local"
+    url "http://carsnip-artifactory.oodlefinance.com:8081/:8081/artifactory/libs-release-local"
     layout "maven"
   }
-  maven { url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release" }
+  maven { url "http://carsnip-artifactory.oodlefinance.com:8081/artifactory/libs-release" }
   jcenter()
 }
 
