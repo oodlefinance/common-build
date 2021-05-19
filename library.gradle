@@ -2,7 +2,8 @@ apply plugin: 'ivy-publish'
 apply plugin: 'java-library'
 
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
-jenkinsIP = '54.154.146.14'
+
+def jenkinsIP = '54.154.146.14'
 
 def artifactoryUrl = InetAddress.localHost.hostAddress == jenkinsIP ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
 
