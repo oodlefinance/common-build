@@ -9,7 +9,7 @@ archivesBaseName = projectName
 sourceCompatibility = 1.11
 jar.baseName = projectName
 
-def jenkinsIP = '54.154.146.14'
+def jenkinsIP = '172.17.0.4'
 
 def artifactory = InetAddress.localHost.hostAddress == jenkinsIP ? 'http://artifactory.internal.carsnip.com:8081' : 'http://carsnip-jenkins.oodlefinance.com:8081'
 
