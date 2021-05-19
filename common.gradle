@@ -8,6 +8,10 @@ version = version ?: '1.0.0'
 archivesBaseName = projectName
 sourceCompatibility = 1.11
 jar.baseName = projectName
+jenkinsIP = '54.154.146.14'
+
+def artifactory = InetAddress.localHost.hostAddress == jenkinsIP ? 'http://artifactory.internal.carsnip.com:8081' : 'http://carsnip-jenkins.oodlefinance.com:8081'
+
 
 dependencies {
   resolutionRules 'com.netflix.nebula:gradle-resolution-rules:latest.release'
@@ -43,10 +47,10 @@ distributions {
 repositories {
   // use our artifactory repository that proxies the other repositories such as maven central
   ivy {
-    url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local"
+    url "${artifactory}/artifactory/libs-release-local"
     layout "maven"
   }
-  maven { url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release" }
+  maven { url "${artifactory}/artifactory/libs-release" }
   jcenter()
 }
 
