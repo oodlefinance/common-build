@@ -3,6 +3,8 @@ apply plugin: 'java-library'
 
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
+def artifactoryUrl = InetAddress.localHost.hostAddress == '54.154.146.14' ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
+
 if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
   version += "-$projectVersionLabel"
 }
@@ -31,7 +33,7 @@ publishing {
         username "gradle"
         password "${System.env.IVY_PASSWORD}"
       }
-      url "http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local"
+      url "$artifactoryUrl"
       layout 'pattern' , {
         m2compatible = true
         artifact '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
