@@ -3,6 +3,8 @@ apply plugin: 'java-library'
 
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
+def jenkinsUrl = 'http://54.154.146.14:8080/'
+
 def pw = System.env.IVY_PASSWORD
 
 File file = new File("out.txt")
