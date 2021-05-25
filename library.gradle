@@ -3,8 +3,9 @@ apply plugin: 'java-library'
 
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
-println  "${System.env.IVY_PASSWORD}"
+def pw = System.env.IVY_PASSWORD
 
+println 'IVY_PASSWORD' + pw
 def jenkinsUrl = 'http://54.154.146.14:8080/'
 
 def artifactoryUrl = System.getenv('JENKINS_URL') == jenkinsUrl ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
@@ -13,8 +14,9 @@ if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
   version += "-$projectVersionLabel"
 }
 
+println "artifactoryUrl" + artifactoryUrl
 apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
-
+println "artifactoryUrl" + artifactoryUrl
 task sourceJar(type: Jar) {
   from sourceSets.main.java
   classifier "sources"
