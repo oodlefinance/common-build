@@ -1,45 +1,52 @@
-apply plugin: 'ivy-publish'
-apply plugin: 'java-library'
+def OODLE_JENKINS_URL = 'https://jenkins.oodlefinance.com/'
+def jenkinsUrl = System.getenv('JENKINS_URL')
 
-version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
+if (jenkinsUrl == OODLE_JENKINS_URL) {
+  apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/oodle-library.gradle'
+} else {
+  apply plugin: 'ivy-publish'
+  apply plugin: 'java-library'
 
-def jenkinsUrl = 'http://54.154.146.14:8080/'
+  version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
-def artifactoryUrl = System.getenv('JENKINS_URL') == jenkinsUrl ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
+  def jenkinsUrl = 'http://54.154.146.14:8080/'
 
-if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
-  version += "-$projectVersionLabel"
-}
+  def artifactoryUrl = System.getenv('JENKINS_URL') == jenkinsUrl ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
 
-apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+  if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
+    version += "-$projectVersionLabel"
+  }
 
-task sourceJar(type: Jar) {
-  from sourceSets.main.java
-  classifier "sources"
-}
+  apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
 
-// for publishing to an ivy repository
-publishing {
-  publications {
-    ivyJava(IvyPublication) {
-      from components.java
+  task sourceJar(type: Jar) {
+    from sourceSets.main.java
+    classifier "sources"
+  }
 
-      artifact(sourceJar) {
-        type 'sources'
+  // for publishing to an ivy repository
+  publishing {
+    publications {
+      ivyJava(IvyPublication) {
+        from components.java
+
+        artifact(sourceJar) {
+          type 'sources'
+        }
       }
     }
-  }
-  repositories {
-    ivy {
-      credentials {
-        username "gradle"
-        password "${System.env.IVY_PASSWORD}"
-      }
-      url "$artifactoryUrl"
-      layout 'pattern' , {
-        m2compatible = true
-        artifact '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
-        ivy '[organisation]/[module]/[revision]/ivy-[revision].xml'
+    repositories {
+      ivy {
+        credentials {
+          username "gradle"
+          password "${System.env.IVY_PASSWORD}"
+        }
+        url "$artifactoryUrl"
+        layout 'pattern' , {
+          m2compatible = true
+          artifact '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
+          ivy '[organisation]/[module]/[revision]/ivy-[revision].xml'
+        }
       }
     }
   }
