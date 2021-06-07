@@ -1,4 +1,6 @@
 def OODLE_JENKINS_URL = 'https://jenkins.oodlefinance.com/'
+def WEB_ENG_JENKINS_URL = 'http://54.154.146.14:8080/'
+
 def jenkinsUrl = System.getenv('JENKINS_URL')
 
 if (jenkinsUrl == OODLE_JENKINS_URL) {
@@ -9,7 +11,7 @@ if (jenkinsUrl == OODLE_JENKINS_URL) {
 
   version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
-  def artifactoryUrl = System.getenv('JENKINS_URL') == jenkinsUrl ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
+  def artifactoryUrl = jenkinsUrl == WEB_ENG_JENKINS_URL? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
 
   if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
     version += "-$projectVersionLabel"
