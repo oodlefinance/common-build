@@ -11,7 +11,7 @@ if (jenkinsUrl == OODLE_JENKINS_URL) {
 
   version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
 
-  def artifactoryUrl = jenkinsUrl == WEB_ENG_JENKINS_URL ? 'http://artifactory.internal.oodlefinance.com:8081/artifactory/libs-release-local' : 'http://oodlefinance-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
+  def artifactoryUrl = jenkinsUrl == WEB_ENG_JENKINS_URL ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
 
   if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
     version += "-$projectVersionLabel"
