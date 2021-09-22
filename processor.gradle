@@ -3,7 +3,7 @@ apply plugin: 'application'
 mainClassName = projectMainClass //required by application plugin
 version = projectVersion
 
-apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
 
 String jolokiaPort = '7777'
 String dockerRepo = '963107833485.dkr.ecr.eu-west-1.amazonaws.com'
