@@ -11,7 +11,7 @@ jar.baseName = projectName
 
 def jenkinsUrl = 'http://54.154.146.14:8080/'
 
-def artifactory = System.getenv('JENKINS_URL') == jenkinsUrl ? 'http://artifactory.internal.oodlefinance.com:8081' : 'http://oodlefinance-jenkins.oodlefinance.com:8081'
+def artifactory = System.getenv('JENKINS_URL') == jenkinsUrl ? 'http://artifactory.internal.carsnip.com:8081' : 'http://carsnip-jenkins.oodlefinance.com:8081'
 
 
 sourceSets {
