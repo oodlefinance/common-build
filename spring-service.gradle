@@ -1,6 +1,6 @@
 apply plugin: 'application'
 
-apply from: 'https://raw.githubusercontent.com/carsnip/common-build/master/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
 
 bootJar {
   mainClassName = "$projectMainClass"
