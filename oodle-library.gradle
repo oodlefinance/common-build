@@ -72,7 +72,7 @@ test {
 	}
 }
 
-integrationtest {
+integrationTest {
 	testLogging {
 		events "passed", "skipped", "failed"
 		exceptionFormat "full"
