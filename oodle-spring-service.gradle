@@ -18,7 +18,12 @@ apply plugin: 'groovy'
 
 group = projectGroup
 sourceCompatibility = 11
+
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
+
+ext {
+	mainClass = "$projectMainClass"
+}
 
 repositories {
 	mavenLocal()
