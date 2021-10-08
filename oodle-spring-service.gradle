@@ -34,8 +34,6 @@ repositories {
 
 ext {
 	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
-  mainClass = "$projectMainClass"
-  mainClassName = "$projectMainClass"
 }
 
 sourceSets {
@@ -83,6 +81,7 @@ def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
 
 
 bootJar {
+  mainClassName = "$projectMainClass"
 	archiveFileName = "${rootProject.name.toLowerCase()}-$projectVersion-fat.jar"
 	manifest {
 		attributes(
