@@ -21,11 +21,6 @@ sourceCompatibility = 11
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
 
-ext {
-	mainClass = "$projectMainClass"
-  mainClassName = "$projectMainClass"
-}
-
 repositories {
 	mavenLocal()
 	maven {
@@ -39,6 +34,8 @@ repositories {
 
 ext {
 	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+  mainClass = "$projectMainClass"
+  mainClassName = "$projectMainClass"
 }
 
 sourceSets {
