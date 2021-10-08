@@ -44,11 +44,29 @@ sourceSets {
 		compileClasspath += main.output + test.output
 		runtimeClasspath += main.output + test.output
 	}
+
+  acceptancetest {
+		java {
+			srcDirs file("src/acceptanceTest/groovy")
+		}
+		resources.srcDirs file("src/acceptanceTest/resources")
+		compileClasspath += main.output + test.output
+		runtimeClasspath += main.output + test.output
+	}
 }
 
 task integrationtest(type: Test, group: 'verification', dependsOn: test) {
 	testClassesDirs = sourceSets.integrationtest.output.classesDirs
 	classpath = sourceSets.integrationtest.runtimeClasspath
+	mustRunAfter test
+	beforeTest { descriptor ->
+		logger.lifecycle("Running test: " + descriptor)
+	}
+}
+
+task acceptancetest(type: Test, group: 'verification', dependsOn: test) {
+	testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
+	classpath = sourceSets.acceptanceTest.runtimeClasspath
 	mustRunAfter test
 	beforeTest { descriptor ->
 		logger.lifecycle("Running test: " + descriptor)
