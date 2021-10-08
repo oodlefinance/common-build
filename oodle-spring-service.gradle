@@ -65,8 +65,8 @@ task integrationTest(type: Test, group: 'verification', dependsOn: test) {
 }
 
 task acceptanceTest(type: Test, group: 'verification', dependsOn: test) {
-	testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
-	classpath = sourceSets.acceptanceTest.runtimeClasspath
+	testClassesDirs = sourceSets.acceptancetest.output.classesDirs
+	classpath = sourceSets.acceptancetest.runtimeClasspath
 	mustRunAfter test
 	beforeTest { descriptor ->
 		logger.lifecycle("Running test: " + descriptor)
