@@ -46,7 +46,7 @@ sourceSets {
 	}
 }
 
-task integrationtest(type: Test, group: 'verification', dependsOn: test) {
+task integrationTest(type: Test, group: 'verification', dependsOn: test) {
 	testClassesDirs = sourceSets.integrationtest.output.classesDirs
 	classpath = sourceSets.integrationtest.runtimeClasspath
 	mustRunAfter test
@@ -55,7 +55,7 @@ task integrationtest(type: Test, group: 'verification', dependsOn: test) {
 	}
 }
 
-task acceptancetest(type: Test, group: 'verification', dependsOn: test) {
+task acceptanceTest(type: Test, group: 'verification', dependsOn: test) {
 	testClassesDirs = sourceSets.acceptancetest.output.classesDirs
 	classpath = sourceSets.acceptancetest.runtimeClasspath
 	mustRunAfter test
