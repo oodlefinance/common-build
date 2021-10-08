@@ -82,7 +82,7 @@ def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
 
 bootJar {
   mainClassName = "$projectMainClass"
-	archiveFileName = "${rootProject.name.toLowerCase()}-$projectVersion-fat.jar"
+	archiveName = "$projectName-$projectVersion-fat.jar"
 	manifest {
 		attributes(
 						'Implementation-Version': project.version,
