@@ -1,8 +1,17 @@
-apply plugin: 'application'
+def OODLE_JENKINS_URL = 'https://jenkins.oodlefinance.com/'
+def WEB_ENG_JENKINS_URL = 'http://54.154.146.14:8080/'
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
+def jenkinsUrl = System.getenv('JENKINS_URL')
 
-bootJar {
-  mainClassName = "$projectMainClass"
-  archiveName = "$projectName-$projectVersion-fat.jar"
+if (jenkinsUrl == OODLE_JENKINS_URL) {
+  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-spring-service.gradle'
+} else {
+  apply plugin: 'application'
+
+  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
+
+  bootJar {
+    mainClassName = "$projectMainClass"
+    archiveName = "$projectName-$projectVersion-fat.jar"
+  }
 }
