@@ -4,7 +4,7 @@ def WEB_ENG_JENKINS_URL = 'http://54.154.146.14:8080/'
 def jenkinsUrl = System.getenv('JENKINS_URL')
 
 if (jenkinsUrl == OODLE_JENKINS_URL) {
-  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/oodle2/oodle-spring-service.gradle'
+  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-spring-service.gradle'
 } else {
   apply plugin: 'application'
 
