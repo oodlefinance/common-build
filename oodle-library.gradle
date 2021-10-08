@@ -72,15 +72,6 @@ test {
 	}
 }
 
-integrationTest {
-	testLogging {
-		events "passed", "skipped", "failed"
-		exceptionFormat "full"
-		outputs.upToDateWhen { false }
-		showStandardStreams = true
-	}
-}
-
 def qualityChecks = new File("${devopsGradleDir}/qualityChecks.gradle")
 def publishArtifacts = new File("${devopsGradleDir}/publishArtifacts.gradle")
 def sonarQube = new File("${devopsGradleDir}/sonarQube.gradle")
