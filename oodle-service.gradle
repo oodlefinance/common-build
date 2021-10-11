@@ -14,7 +14,6 @@ buildscript {
 	}
 }
 
-apply plugin: 'groovy'
 apply plugin: 'application'
 
 group = projectGroup

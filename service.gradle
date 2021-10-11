@@ -1,29 +1,38 @@
-apply plugin: 'application'
+def OODLE_JENKINS_URL = 'https://jenkins.oodlefinance.com/'
+def WEB_ENG_JENKINS_URL = 'http://54.154.146.14:8080/'
 
-mainClassName = project.hasProperty(projectMainClass) ? project.property(projectMainClass) : 'com.carsnip.vertx.Launcher'
-version = projectVersion
+def jenkinsUrl = System.getenv('JENKINS_URL')
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
+if (jenkinsUrl == OODLE_JENKINS_URL) {
+  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-service.gradle'
+} else {
+  apply plugin: 'application'
 
-jar {
-  manifest {
-    attributes 'Main-Class': mainClassName
-  }
-}
+  mainClassName = project.hasProperty(projectMainClass) ? project.property(projectMainClass) : 'com.carsnip.vertx.Launcher'
+  version = projectVersion
 
-shadowJar {
-  classifier = 'fat'
-  manifest {
-    attributes "Main-Verticle": mainVerticleName
-  }
+  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
 
-  mergeServiceFiles {
-    include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+  jar {
+    manifest {
+      attributes 'Main-Class': mainClassName
+    }
   }
 
-  mergeGroovyExtensionModules()
-}
+  shadowJar {
+    classifier = 'fat'
+    manifest {
+      attributes "Main-Verticle": mainVerticleName
+    }
 
-run {
-  args = ['run', mainVerticleName, "--launcher-class=$mainClassName", "-conf=dev-conf.json"]
+    mergeServiceFiles {
+      include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
+
+    mergeGroovyExtensionModules()
+  }
+
+  run {
+    args = ['run', mainVerticleName, "--launcher-class=$mainClassName", "-conf=dev-conf.json"]
+  }
 }
