@@ -5,6 +5,12 @@ version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
 
+ext {
+	artifactName = "$projectName"
+	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+  buildShadowedJar = true
+}
+
 jar {
   manifest {
     attributes 'Main-Class': mainClassName
