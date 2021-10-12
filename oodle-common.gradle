@@ -1,0 +1,131 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'distribution'
+
+group = projectGroup
+version = version ?: '1.0.0'
+archivesBaseName = projectName
+sourceCompatibility = 1.11
+jar.baseName = projectName
+
+
+dependencies {
+  resolutionRules 'com.netflix.nebula:gradle-resolution-rules:latest.release'
+}
+
+ext {
+	artifactName = "$projectName"
+	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+}
+
+sourceSets {
+  acceptanceTest {
+    groovy {
+      srcDir file('/src/acceptanceTest/groovy')
+      compileClasspath += main.output + test.output + configurations.testRuntime
+      runtimeClasspath += output + compileClasspath
+    }
+  }
+
+  integrationTest {
+    groovy {
+      srcDir file('/src/integrationTest/groovy')
+      compileClasspath += main.output + test.output + configurations.testRuntime
+      runtimeClasspath += output + compileClasspath
+    }
+  }
+}
+
+distributions {
+  main {
+    contents {
+      from configurations.runtime.allArtifacts.files
+      from configurations.runtime
+    }
+  }
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+		credentials {
+			username "${codeartifactUser}"
+			password "${codeartifactToken}"
+		}
+	}
+}
+
+configurations {
+  compile {
+    exclude group: "org.springframework", module: "spring-jcl"
+  }
+  all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 5, 'minutes'
+  }
+  acceptanceTestCompile.extendsFrom testImplementation
+  acceptanceTestRuntime.extendsFrom testRuntime
+  integrationTestCompile.extendsFrom testImplementation
+  integrationTestRuntime.extendsFrom testRuntime
+}
+
+task acceptanceTest(type: Test, group: 'verification', dependsOn: test) {
+  testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
+  classpath = sourceSets.acceptanceTest.runtimeClasspath
+  include '**/*'
+  outputs.upToDateWhen { false }
+}
+
+task integrationTest(type: Test) {
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  include '**/*'
+  outputs.upToDateWhen { false }
+}
+
+dependencyUpdates.resolutionStrategy {
+  componentSelection { rules ->
+    rules.all { ComponentSelection selection ->
+      boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'snapshot', 'final'].any { qualifier ->
+        selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.?\d-]?.*/
+      }
+
+      if (rejected) {
+        selection.reject('Release candidate')
+      }
+    }
+  }
+}
+
+gradleLint {
+  //unused-dependency covers used but undeclared classes as well as unused, so ignore any of the "one or more classes
+  //in <dependency> are required by your code directly (no auto-fix available)", no easy fix :(
+  rules = ['all-dependency', 'unused-dependency', 'unused-exclude-by-dep']
+  excludedRules = ['unused-exclude-by-conf']
+
+  //Can be commented out after the first time it's run as it's useful, but it also doesn't recognise implementation, and
+  //replaces with compile (and sets hard versions.) If they fix this then can be added to excludedRules
+  //excludedRules += 'undeclared-dependency'
+
+  alwaysRun = false
+}
+
+test {
+	testLogging {
+		events "passed", "skipped", "failed"
+		outputs.upToDateWhen { false }
+		showStandardStreams = true
+	}
+}
+
+def qualityChecks = new File("${devopsGradleDir}/qualityChecks.gradle")
+def publishArtifacts = new File("${devopsGradleDir}/publishArtifacts.gradle")
+def sonarQube = new File("${devopsGradleDir}/sonarQube.gradle")
+def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
+
+if (qualityChecks.exists()) apply from: qualityChecks
+if (sonarQube.exists()) apply from: sonarQube
+if (publishArtifacts.exists()) apply from: publishArtifacts
+if (securityScan.exists()) apply from: securityScan
