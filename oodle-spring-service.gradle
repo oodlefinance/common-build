@@ -14,71 +14,12 @@ buildscript {
 	}
 }
 
-apply plugin: 'groovy'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
 
 group = projectGroup
 sourceCompatibility = 11
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
-
-repositories {
-	mavenLocal()
-	maven {
-		url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
-		credentials {
-			username "${codeartifactUser}"
-			password "${codeartifactToken}"
-		}
-	}
-}
-
-ext {
-	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
-}
-
-sourceSets {
-	integrationtest {
-		java {
-			srcDirs file("src/acceptanceTest/groovy")
-		}
-		resources.srcDirs file("src/acceptanceTest/resources")
-		compileClasspath += main.output + test.output
-		runtimeClasspath += main.output + test.output
-	}
-
-  acceptancetest {
-		java {
-			srcDirs file("src/acceptanceTest/groovy")
-		}
-		resources.srcDirs file("src/acceptanceTest/resources")
-		compileClasspath += main.output + test.output
-		runtimeClasspath += main.output + test.output
-	}
-}
-
-task integrationTest(type: Test, group: 'verification', dependsOn: test) {
-	testClassesDirs = sourceSets.integrationtest.output.classesDirs
-	classpath = sourceSets.integrationtest.runtimeClasspath
-	mustRunAfter test
-	beforeTest { descriptor ->
-		logger.lifecycle("Running test: " + descriptor)
-	}
-}
-
-task acceptanceTest(type: Test, group: 'verification', dependsOn: test) {
-	testClassesDirs = sourceSets.acceptancetest.output.classesDirs
-	classpath = sourceSets.acceptancetest.runtimeClasspath
-	mustRunAfter test
-	beforeTest { descriptor ->
-		logger.lifecycle("Running test: " + descriptor)
-	}
-}
-
-def qualityChecks = new File("${devopsGradleDir}/qualityChecks.gradle")
-def publishArtifacts = new File("${devopsGradleDir}/publishArtifacts.gradle")
-def sonarQube = new File("${devopsGradleDir}/sonarQube.gradle")
-def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
-
 
 bootJar {
   mainClassName = "$projectMainClass"
@@ -91,15 +32,3 @@ bootJar {
 		)
 	}
 }
-
-test {
-	useJUnitPlatform()
-	testLogging {
-		events "passed", "skipped", "failed"
-	}
-}
-
-if (qualityChecks.exists()) apply from: qualityChecks
-if (sonarQube.exists()) apply from: sonarQube
-if (publishArtifacts.exists()) apply from: publishArtifacts
-if (securityScan.exists()) apply from: securityScan
