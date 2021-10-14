@@ -7,17 +7,19 @@ apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/
 
 String jolokiaPort = '7777'
 String dockerRepo = '789273353433.dkr.ecr.eu-west-1.amazonaws.com'
-String dockerTag = project.hasProperty('tag') ? project.property('tag') : 'test'
+String dockerImageName = project.hasProperty('dockerImageName') ? project.property('dockerImageName') : 'test:latest'
 String revision = project.hasProperty('revision') ? project.property('revision') : ''
 String source = project.hasProperty('source') ? project.property('source') : ''
 String buildDate = project.hasProperty('buildDate') ? project.property('buildDate') : ''
+
+String dockerTag = dockerImageName.split(':').last()
 
 jib {
   from {
     image = "$dockerRepo/oodle-web-engineering-service-java-base-image:1"
   }
   to {
-    image = "$dockerRepo/$projectName:$dockerTag"
+    image = "$dockerRepo/$dockerImageName"
   }
   container {
     jvmFlags = ["-Xmx${project.hasProperty('xmx') ? project.property('xmx') : '256m'}".toString(), '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]

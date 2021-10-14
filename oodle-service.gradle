@@ -5,6 +5,8 @@ version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
 
+version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
+
 ext {
 	artifactName = "$projectName"
 	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
