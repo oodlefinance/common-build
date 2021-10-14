@@ -5,6 +5,8 @@ version = projectVersion
 
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
 
+version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
+
 String jolokiaPort = '7777'
 String dockerRepo = '789273353433.dkr.ecr.eu-west-1.amazonaws.com'
 String dockerImageName = project.hasProperty('dockerImageName') ? project.property('dockerImageName') : 'test:latest'
