@@ -71,7 +71,7 @@ configurations {
   integrationTestRuntime.extendsFrom testRuntime
 }
 
-task acceptanceTest(type: Test, group: 'verification', dependsOn: test) {
+task acceptanceTest(type: Test, group: 'verification') {
   testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
   classpath = sourceSets.acceptanceTest.runtimeClasspath
   include '**/*'
