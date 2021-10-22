@@ -21,6 +21,7 @@ jar {
 
 shadowJar {
   classifier = 'fat'
+	version=projectVersion
   manifest {
     attributes "Main-Verticle": mainVerticleName
   }
