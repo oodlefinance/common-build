@@ -3,7 +3,7 @@ apply plugin: 'application'
 mainClassName = project.hasProperty(projectMainClass) ? project.property(projectMainClass) : 'com.carsnip.vertx.Launcher'
 version = projectVersion
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
 
