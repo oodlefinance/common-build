@@ -1,53 +1,7 @@
-def OODLE_JENKINS_URL = 'https://jenkins.oodlefinance.com/'
-def WEB_ENG_JENKINS_URL = 'http://54.154.146.14:8080/'
+apply plugin: 'java-library'
 
-def jenkinsUrl = System.getenv('JENKINS_URL')
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
 
-if (jenkinsUrl == OODLE_JENKINS_URL) {
-  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-library.gradle'
-} else {
-  apply plugin: 'ivy-publish'
-  apply plugin: 'java-library'
+group = projectGroup
 
-  version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
-
-  def artifactoryUrl = jenkinsUrl == WEB_ENG_JENKINS_URL ? 'http://artifactory.internal.carsnip.com:8081/artifactory/libs-release-local' : 'http://carsnip-jenkins.oodlefinance.com:8081/artifactory/libs-release-local'
-
-  if (buildNumber == '0' && project.hasProperty('projectVersionLabel')) {
-    version += "-$projectVersionLabel"
-  }
-
-  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
-
-  task sourceJar(type: Jar) {
-    from sourceSets.main.java
-    classifier "sources"
-  }
-
-  // for publishing to an ivy repository
-  publishing {
-    publications {
-      ivyJava(IvyPublication) {
-        from components.java
-
-        artifact(sourceJar) {
-          type 'sources'
-        }
-      }
-    }
-    repositories {
-      ivy {
-        credentials {
-          username "gradle"
-          password "${System.env.IVY_PASSWORD}"
-        }
-        url "$artifactoryUrl"
-        layout 'pattern' , {
-          m2compatible = true
-          artifact '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
-          ivy '[organisation]/[module]/[revision]/ivy-[revision].xml'
-        }
-      }
-    }
-  }
-}
+version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
