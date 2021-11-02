@@ -1,46 +1,41 @@
-def OODLE_JENKINS_URL = 'https://jenkins.oodlefinance.com/'
-def WEB_ENG_JENKINS_URL = 'http://54.154.146.14:8080/'
+apply plugin: 'application'
 
-def jenkinsUrl = System.getenv('JENKINS_URL')
+mainClassName = projectMainClass //required by application plugin
+version = projectVersion
 
-if (jenkinsUrl == OODLE_JENKINS_URL) {
-  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-processor.gradle'
-} else {
-  apply plugin: 'application'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
 
-  mainClassName = projectMainClass //required by application plugin
-  version = projectVersion
+version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
 
-  apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
+String jolokiaPort = '7777'
+String dockerRepo = '789273353433.dkr.ecr.eu-west-1.amazonaws.com'
+String dockerImageName = project.hasProperty('dockerImageName') ? project.property('dockerImageName') : 'test:latest'
+String revision = project.hasProperty('revision') ? project.property('revision') : ''
+String source = project.hasProperty('source') ? project.property('source') : ''
+String buildDate = project.hasProperty('buildDate') ? project.property('buildDate') : ''
 
-  String jolokiaPort = '7777'
-  String dockerRepo = '963107833485.dkr.ecr.eu-west-1.amazonaws.com'
-  String dockerTag = project.hasProperty('tag') ? project.property('tag') : 'test'
-  String revision = project.hasProperty('revision') ? project.property('revision') : ''
-  String source = project.hasProperty('source') ? project.property('source') : ''
-  String buildDate = project.hasProperty('buildDate') ? project.property('buildDate') : ''
+String dockerTag = dockerImageName.split(':').last()
 
-  jib {
-    from {
-      image = "$dockerRepo/docker-java-11.0.5-jre:master-12"
-    }
-    to {
-      image = "$dockerRepo/$projectName:$dockerTag"
-    }
-    container {
-      jvmFlags = ["-Xmx${project.hasProperty('xmx') ? project.property('xmx') : '256m'}".toString(), '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
-      mainClass = projectMainClass
-      labels = [
-        'org.opencontainers.image.title': projectName,
-        'org.opencontainers.image.version': dockerTag,
-        'org.opencontainers.image.revision': revision,
-        'org.opencontainers.image.created': buildDate,
-        'org.opencontainers.image.source': source
-      ]
-      environment = [
-        'SERVICE_NAME': projectName,
-        'SERVICE_VERSION': dockerTag
-      ]
-    }
+jib {
+  from {
+    image = "$dockerRepo/oodle-web-engineering-service-java-base-image:1"
+  }
+  to {
+    image = "$dockerRepo/$dockerImageName"
+  }
+  container {
+    jvmFlags = ["-Xmx${project.hasProperty('xmx') ? project.property('xmx') : '256m'}".toString(), '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
+    mainClass = projectMainClass
+    labels = [
+      'org.opencontainers.image.title': projectName,
+      'org.opencontainers.image.version': dockerTag,
+      'org.opencontainers.image.revision': revision,
+      'org.opencontainers.image.created': buildDate,
+      'org.opencontainers.image.source': source
+    ]
+    environment = [
+      'SERVICE_NAME': projectName,
+      'SERVICE_VERSION': dockerTag
+    ]
   }
 }
