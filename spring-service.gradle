@@ -14,7 +14,7 @@ buildscript {
 	}
 }
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/oodle-common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
 
 group = projectGroup
 sourceCompatibility = 11
