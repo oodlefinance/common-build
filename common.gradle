@@ -9,11 +9,6 @@ archivesBaseName = projectName
 sourceCompatibility = 1.11
 jar.baseName = projectName
 
-
-dependencies {
-  resolutionRules 'com.netflix.nebula:gradle-resolution-rules:latest.release'
-}
-
 ext {
 	artifactName = "$projectName"
 	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
