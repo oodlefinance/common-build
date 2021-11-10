@@ -9,11 +9,6 @@ archivesBaseName = projectName
 sourceCompatibility = 1.11
 jar.baseName = projectName
 
-
-dependencies {
-  resolutionRules 'com.netflix.nebula:gradle-resolution-rules:latest.release'
-}
-
 ext {
 	artifactName = "$projectName"
 	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
@@ -97,19 +92,6 @@ dependencyUpdates.resolutionStrategy {
       }
     }
   }
-}
-
-gradleLint {
-  //unused-dependency covers used but undeclared classes as well as unused, so ignore any of the "one or more classes
-  //in <dependency> are required by your code directly (no auto-fix available)", no easy fix :(
-  rules = ['all-dependency', 'unused-dependency', 'unused-exclude-by-dep']
-  excludedRules = ['unused-exclude-by-conf']
-
-  //Can be commented out after the first time it's run as it's useful, but it also doesn't recognise implementation, and
-  //replaces with compile (and sets hard versions.) If they fix this then can be added to excludedRules
-  //excludedRules += 'undeclared-dependency'
-
-  alwaysRun = false
 }
 
 test {
