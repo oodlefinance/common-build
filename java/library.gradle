@@ -1,6 +1,13 @@
 apply plugin: 'java-library'
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(16))
+  }
+}
+
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
+
 group = projectGroup
 
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"

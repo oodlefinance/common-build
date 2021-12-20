@@ -6,7 +6,7 @@ apply plugin: 'distribution'
 group = projectGroup
 version = version ?: '1.0.0'
 archivesBaseName = projectName
-sourceCompatibility = 1.11
+
 jar.baseName = projectName
 
 ext {
