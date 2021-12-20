@@ -1,3 +1,11 @@
+apply plugin: 'application	'
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(16))
+  }
+}
+
 buildscript {
 	repositories {
 		maven {
@@ -17,7 +25,6 @@ buildscript {
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
 
 group = projectGroup
-sourceCompatibility = 11
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
 
