@@ -1,17 +1,12 @@
+apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'distribution'
-apply plugin: 'application'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(16)
-    }
-}
 
 group = projectGroup
 version = version ?: '1.0.0'
 archivesBaseName = projectName
+sourceCompatibility = 1.11
 jar.baseName = projectName
 
 ext {
@@ -19,34 +14,18 @@ ext {
 	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
 }
 
-configurations {
-  compile {
-    exclude group: "org.springframework", module: "spring-jcl"
-  }
-  all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    resolutionStrategy.cacheDynamicVersionsFor 5, 'minutes'
-  }
-  acceptanceTestCompile.extendsFrom testImplementation
-  acceptanceTestRuntime.extendsFrom testRuntime
-  integrationTestCompile.extendsFrom testImplementation
-  integrationTestRuntime.extendsFrom testRuntime
-}
-
 sourceSets {
   acceptanceTest {
     groovy {
       srcDir file('/src/acceptanceTest/groovy')
-      compileClasspath += main.output + test.output + configurations.testRuntime
-      runtimeClasspath += output + compileClasspath
+			compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
+			runtimeClasspath += output + compileClasspath
     }
   }
 
   integrationTest {
     groovy {
       srcDir file('/src/integrationTest/groovy')
-      compileClasspath += main.output + test.output + configurations.testRuntime
-      runtimeClasspath += output + compileClasspath
     }
   }
 }
@@ -54,8 +33,8 @@ sourceSets {
 distributions {
   main {
     contents {
-      from configurations.runtimeClasspath.allArtifacts.files
-      from configurations.runtimeClasspath
+      from configurations.runtimeOnly.allArtifacts.files
+      from configurations.runtimeOnly
     }
   }
 }
@@ -69,6 +48,24 @@ repositories {
 			password "${codeartifactToken}"
 		}
 	}
+}
+
+configurations {
+	configurations.testImplementation.canBeResolved = true
+	configurations.testRuntimeOnly.canBeResolved = true
+  compile {
+    exclude group: "org.springframework", module: "spring-jcl"
+  }
+  all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 5, 'minutes'
+  }
+
+
+  acceptanceTestCompile.extendsFrom testImplementation
+  acceptanceTestRuntime.extendsFrom testRuntimeClasspath
+  integrationTestCompile.extendsFrom testImplementation
+  integrationTestRuntime.extendsFrom testRuntime
 }
 
 task acceptanceTest(type: Test, group: 'verification') {
