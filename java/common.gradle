@@ -51,8 +51,9 @@ repositories {
 }
 
 configurations {
-	configurations.testImplementation.canBeResolved = true
-	configurations.testRuntimeOnly.canBeResolved = true
+  configurations.testImplementation.canBeResolved = true
+  configurations.testRuntimeOnly.canBeResolved = true
+  configurations.runtimeOnly.canBeResolved = true
   compile {
     exclude group: "org.springframework", module: "spring-jcl"
   }
