@@ -18,7 +18,7 @@ String dockerTag = dockerImageName.split(':').last()
 
 jib {
   from {
-    image = "$dockerRepo/oodle-web-engineering-service-java-base-image:1"
+    image = "$dockerRepo/oodle-web-engineering-service-java-base-image:3"
   }
   to {
     image = "$dockerRepo/$dockerImageName"
