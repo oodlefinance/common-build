@@ -18,14 +18,16 @@ sourceSets {
   acceptanceTest {
     groovy {
       srcDir file('/src/acceptanceTest/groovy')
-			compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
-			runtimeClasspath += output + compileClasspath
+        compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
+        runtimeClasspath += output + compileClasspath
     }
   }
 
   integrationTest {
     groovy {
       srcDir file('/src/integrationTest/groovy')
+        compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
+        runtimeClasspath += output + compileClasspath
     }
   }
 }
