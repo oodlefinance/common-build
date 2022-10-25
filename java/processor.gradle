@@ -1,5 +1,11 @@
 apply plugin: 'application'
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(17))
+  }
+}
+
 mainClassName = projectMainClass //required by application plugin
 version = projectVersion
 
