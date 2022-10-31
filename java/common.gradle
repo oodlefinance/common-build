@@ -71,6 +71,20 @@ configurations {
   integrationTestRuntime.extendsFrom testRuntime
 }
 
+configurations.each {
+    c -> c.resolutionStrategy.dependencySubstitution {
+        all { DependencySubstitution dependency ->
+            if (dependency.requested.group == 'org.yaml') {
+                dependency.useTarget "org.yaml:snakeyaml:${snakeyamlVersion}"
+            }
+        }
+    }
+}
+
+ext {
+	snakeyamlVersion = '1.33'
+  set('snakeyaml.version', snakeyamlVersion)
+}
 task acceptanceTest(type: Test, group: 'verification') {
   testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
   classpath = sourceSets.acceptanceTest.runtimeClasspath
