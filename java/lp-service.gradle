@@ -11,6 +11,7 @@ buildscript {
         versionsPluginVersion = '0.43.0'
         // Versions for dependencies included in this script
         lombokVersion = '1.18.24'
+        oodleLoggingVersion = '1.0.4'
         logstashEncoderVersion = '7.2'
         // Versions for optional dependencies that may be used in project build.gradle files
         // Note these can be overridden in build.gradle in an ext {} block
@@ -18,11 +19,9 @@ buildscript {
         oodleCloudVersion = '2.3.1'
         oodleJwtVersion = '1.2.1'
         oodleMetricsVersion = '1.3.1'
-        oodleLoggingVersion = '1.0.4'
         libBffObjectsVersion = 'v1.3.0'
         // Transitive dependency versions forced temporarily to resolve security issues
         snakeYamlVersion = '1.33'
-        woodstoxCoreVersion = '6.4.0'
     }
     // Repository block for sourcing plugins
     repositories {
