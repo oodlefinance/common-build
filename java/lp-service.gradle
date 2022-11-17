@@ -45,6 +45,7 @@ apply plugin: 'java'
 // See https://blog.mrhaki.com/2015/10/gradle-goodness-apply-external-script.html
 
 apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 apply plugin: org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 apply plugin: com.github.benmanes.gradle.versions.VersionsPlugin
 
@@ -60,6 +61,8 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -81,6 +84,10 @@ dependencies {
         implementation('org.springframework.security:spring-security-config:[5.7.5,)') {
             // Transitive dependency of spring boot, should be resolved with spring boot > 2.7.5
             because '5.7.4 and earlier are affected by CVEs'
+        }
+        implementation("com.fasterxml.woodstox:woodstox-core:[6.4.0,)"){
+            // Transitive dependency of apache CXF, should be resolved with versions after 3.5.4
+            because '6.3.1 and earlier are affected by CVEs'
         }
     }
 }
