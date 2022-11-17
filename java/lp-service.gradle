@@ -74,6 +74,14 @@ dependencies {
             // Transitive dependency of spring boot, should be resolved in version 3
             because 'Version < 1.33 has vulnerabilities reported by the OWASP dependency checker'
         }
+        implementation('org.springframework.security:spring-security-web:[5.7.5,)') {
+            // Transitive dependency of spring boot, should be resolved with spring boot > 2.7.5
+            because '5.7.4 and earlier are affected by CVEs'
+        }
+        implementation('org.springframework.security:spring-security-config:[5.7.5,)') {
+            // Transitive dependency of spring boot, should be resolved with spring boot > 2.7.5
+            because '5.7.4 and earlier are affected by CVEs'
+        }
     }
 }
 
