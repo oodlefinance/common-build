@@ -45,7 +45,6 @@ apply plugin: 'java'
 // See https://blog.mrhaki.com/2015/10/gradle-goodness-apply-external-script.html
 
 apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
-
 apply plugin: org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 apply plugin: com.github.benmanes.gradle.versions.VersionsPlugin
 
