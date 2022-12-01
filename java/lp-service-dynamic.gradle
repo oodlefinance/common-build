@@ -2,20 +2,20 @@
 
 import java.text.SimpleDateFormat
 
-println 'Project using lp-service-common script as of ' + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())
+println 'Project using lp-service-dynamic script as of ' + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())
 
 buildscript {
     ext {
         devopsGradleDir = "${rootDir}/oodle-devops/gradle"
 
-        springBootVersion = '2+' // Version used for gradle plugin AND framework dependencies
+        springBootVersion = '2.+' // Version used for gradle plugin AND framework dependencies
         // Plugin versions
-        dependencyCheckVersion = '7+'
+        dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
         // Versions for dependencies included in this script
-        lombokVersion = '1+'
-        oodleLoggingVersion = '1+'
-        logstashEncoderVersion = '7+'
+        lombokVersion = '1.+'
+        oodleLoggingVersion = '1.+'
+        logstashEncoderVersion = '7.+'
     }
     // Repository block for sourcing plugins
     repositories {
@@ -74,14 +74,6 @@ dependencies {
         implementation("org.yaml:snakeyaml:1.33") {
             // Transitive dependency of spring boot, should be resolved in version 3
             because 'Version < 1.33 has vulnerabilities reported by the OWASP dependency checker'
-        }
-        implementation('org.springframework.security:spring-security-web:5.7.5') {
-            // Transitive dependency of spring boot, should be resolved with spring boot > 2.7.5
-            because '5.7.4 and earlier are affected by CVEs'
-        }
-        implementation('org.springframework.security:spring-security-config:5.7.5') {
-            // Transitive dependency of spring boot, should be resolved with spring boot > 2.7.5
-            because '5.7.4 and earlier are affected by CVEs'
         }
         implementation("com.fasterxml.woodstox:woodstox-core:6.4.0"){
             // Transitive dependency of apache CXF, should be resolved with versions after 3.5.4
