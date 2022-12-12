@@ -13,6 +13,7 @@ buildscript {
         dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
         // Versions for dependencies included in this script
+        lpBomVersion = '1.+'
         lombokVersion = '1.+'
         oodleLoggingVersion = '1.+'
         logstashEncoderVersion = '7.+'
@@ -59,6 +60,8 @@ dependencyLocking {
 }
 
 dependencies {
+    implementation platform("com.oodlefinance.loanprocessing:lp-service-bom:${lpBomVersion}")
+
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -69,17 +72,6 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashEncoderVersion}"
     implementation "com.oodlefinance:logging:${oodleLoggingVersion}"
 
-    // Constraints on transitive dependencies. Include a note for when these can be removed.
-    constraints {
-        implementation("org.yaml:snakeyaml:1.33") {
-            // Transitive dependency of spring boot, should be resolved in version 3
-            because 'Version < 1.33 has vulnerabilities reported by the OWASP dependency checker'
-        }
-        implementation("com.fasterxml.woodstox:woodstox-core:6.4.0"){
-            // Transitive dependency of apache CXF, should be resolved with versions after 3.5.4
-            because '6.3.1 and earlier are affected by CVEs'
-        }
-    }
 }
 
 sourceCompatibility = JavaVersion.valueOf(javaVersion)
