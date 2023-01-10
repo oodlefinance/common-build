@@ -6,6 +6,7 @@ apply plugin: 'distribution'
 group = projectGroup
 version = version ?: '1.0.0'
 archivesBaseName = projectName
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 
 jar.baseName = projectName
 
