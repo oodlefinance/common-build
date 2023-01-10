@@ -19,8 +19,8 @@ buildscript {
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
 
 group = projectGroup
-
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 
 bootJar {
   mainClassName = "$projectMainClass"
