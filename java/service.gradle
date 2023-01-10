@@ -2,7 +2,7 @@ apply plugin: 'application'
 
 mainClassName = project.hasProperty(projectMainClass) ? project.property(projectMainClass) : 'com.carsnip.vertx.Launcher'
 version = projectVersion
-
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"

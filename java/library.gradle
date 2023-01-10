@@ -3,5 +3,5 @@ apply plugin: 'java-library'
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
 
 group = projectGroup
-
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"

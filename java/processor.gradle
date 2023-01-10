@@ -2,6 +2,7 @@ apply plugin: 'application'
 
 mainClassName = projectMainClass //required by application plugin
 version = projectVersion
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 
 apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
 
