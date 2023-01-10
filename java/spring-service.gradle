@@ -1,11 +1,5 @@
 apply plugin: 'application'
 
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(17))
-  }
-}
-
 buildscript {
 	repositories {
 		maven {
