@@ -131,3 +131,8 @@ if (qualityChecks.exists()) apply from: qualityChecks
 if (sonarQube.exists()) apply from: sonarQube
 if (publishArtifacts.exists()) apply from: publishArtifacts
 if (securityScan.exists()) apply from: securityScan
+
+tasks.withType(Test).configureEach {
+    jvmArgs(["--add-opens=java.base/java.lang=ALL-UNNAMED",
+             "--add-opens=java.base/java.util=ALL-UNNAMED"])
+}
