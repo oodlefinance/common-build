@@ -4,39 +4,23 @@ mainClassName = projectMainClass //required by application plugin
 version = projectVersion
 sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/java/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/java/common.gradle'
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
 
-String jolokiaPort = '7777'
-String dockerRepo = '789273353433.dkr.ecr.eu-west-1.amazonaws.com'
-String dockerImageName = project.hasProperty('dockerImageName') ? project.property('dockerImageName') : 'test:latest'
-String revision = project.hasProperty('revision') ? project.property('revision') : ''
-String source = project.hasProperty('source') ? project.property('source') : ''
-String buildDate = project.hasProperty('buildDate') ? project.property('buildDate') : ''
+ext {
+	artifactName = "$projectName"
+	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+  buildShadowedJar = true
+}
 
-String dockerTag = dockerImageName.split(':').last()
+jar {
+  manifest {
+    attributes 'Main-Class': mainClassName
+  }
+}
 
-jib {
-  from {
-    image = "$dockerRepo/oodle-web-engineering-service-java-base-image:3"
-  }
-  to {
-    image = "$dockerRepo/$dockerImageName"
-  }
-  container {
-    jvmFlags = ["-Xmx${project.hasProperty('xmx') ? project.property('xmx') : '256m'}".toString(), '-XX:+ExitOnOutOfMemoryError', "-javaagent:/opt/jolokia.jar=port=${jolokiaPort},host=*".toString()]
-    mainClass = projectMainClass
-    labels = [
-      'org.opencontainers.image.title': projectName,
-      'org.opencontainers.image.version': dockerTag,
-      'org.opencontainers.image.revision': revision,
-      'org.opencontainers.image.created': buildDate,
-      'org.opencontainers.image.source': source
-    ]
-    environment = [
-      'SERVICE_NAME': projectName,
-      'SERVICE_VERSION': dockerTag
-    ]
-  }
+shadowJar {
+  classifier = 'fat'
+	version=projectVersion
 }
