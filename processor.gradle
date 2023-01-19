@@ -3,7 +3,7 @@ apply plugin: 'application'
 mainClassName = projectMainClass //required by application plugin
 version = projectVersion
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/master/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/common.gradle'
 
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
 
