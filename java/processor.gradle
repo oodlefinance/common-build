@@ -1,16 +1,4 @@
 apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
-  }
-}
 
 mainClassName = projectMainClass //required by application plugin
 version = projectVersion
