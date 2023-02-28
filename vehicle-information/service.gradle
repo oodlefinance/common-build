@@ -12,24 +12,19 @@ buildscript {
 	}
 	dependencies {
 		classpath 'io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE'
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.7.4'
 	}
 }
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/java/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/vehicle-information/vehicle-information/common.gradle'
 
 group = projectGroup
-version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
-sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 
 bootJar {
-  mainClassName = "$projectMainClass"
-	archiveName = "$projectName-$projectVersion-fat.jar"
-	manifest {
-		attributes(
-						'Implementation-Version': project.version,
-						'Bundle-SymbolicName': project.group,
-						'Git-commit-hash': "git rev-parse --verify HEAD".execute().text.trim()
-		)
-	}
+    manifest {
+        attributes(
+                'Implementation-Version': project.version,
+                'Bundle-SymbolicName': project.group
+        )
+    }
+    archiveFileName = "${rootProject.name.toLowerCase()}.jar"
 }

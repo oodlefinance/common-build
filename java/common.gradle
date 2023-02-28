@@ -1,45 +1,32 @@
 apply plugin: 'groovy'
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'distribution'
 
-group = projectGroup
-version = version ?: '1.0.0'
-archivesBaseName = projectName
-sourceCompatibility = JavaVersion.valueOf('VERSION_17')
-
-jar.baseName = projectName
+sourceCompatibility = JavaVersion.valueOf(javaVersion)
 
 ext {
-	artifactName = "$projectName"
-	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+    artifactType = 'jar'
+    artifactName = "$projectName"
+    devopsGradleDir = "${rootDir}/oodle-devops/gradle"
 }
+
+project.version = new SimpleDateFormat("'v'yyyyMMddHHmmss").format(new Date())
+
 
 sourceSets {
-  acceptanceTest {
-    groovy {
-      srcDir file('/src/acceptanceTest/groovy')
-        compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
-        runtimeClasspath += output + compileClasspath
+  intTest {
+        groovy {
+            srcDir file('/src/intTest/groovy')
+            compileClasspath += main.output
+            runtimeClasspath += output + compileClasspath
+        }
     }
-  }
 
-  integrationTest {
-    groovy {
-      srcDir file('/src/integrationTest/groovy')
-        compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
-        runtimeClasspath += output + compileClasspath
+    acceptanceTest {
+        groovy {
+            srcDir file('/src/acceptanceTest/groovy')
+            compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
+            runtimeClasspath += output + compileClasspath
+        }
     }
-  }
-}
-
-distributions {
-  main {
-    contents {
-      from configurations.runtimeOnly.allArtifacts.files
-      from configurations.runtimeOnly
-    }
-  }
 }
 
 repositories {
@@ -57,82 +44,29 @@ configurations {
   configurations.testImplementation.canBeResolved = true
   configurations.testRuntimeOnly.canBeResolved = true
   configurations.runtimeOnly.canBeResolved = true
-  compile {
-    exclude group: "org.springframework", module: "spring-jcl"
-  }
-  all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    resolutionStrategy.cacheDynamicVersionsFor 5, 'minutes'
-  }
-
-
-  acceptanceTestCompile.extendsFrom testImplementation
-  acceptanceTestRuntime.extendsFrom testRuntimeClasspath
-  integrationTestCompile.extendsFrom testImplementation
-  integrationTestRuntime.extendsFrom testRuntime
-}
-
-configurations.each {
-    c -> c.resolutionStrategy.dependencySubstitution {
-        all { DependencySubstitution dependency ->
-            if (dependency.requested.group == 'org.yaml') {
-                dependency.useTarget "org.yaml:snakeyaml:${snakeyamlVersion}"
-            }
-        }
-    }
-}
-
-ext {
-	snakeyamlVersion = '1.33'
-  set('snakeyaml.version', snakeyamlVersion)
-}
-task acceptanceTest(type: Test, group: 'verification') {
-  testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
-  classpath = sourceSets.acceptanceTest.runtimeClasspath
-  include '**/*'
-  outputs.upToDateWhen { false }
 }
 
 task integrationTest(type: Test) {
-  testClassesDirs = sourceSets.integrationTest.output.classesDirs
-  classpath = sourceSets.integrationTest.runtimeClasspath
-  include '**/*'
-  outputs.upToDateWhen { false }
+    useJUnitPlatform()
+    dependsOn bootJar
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath += sourceSets.intTest.runtimeClasspath
 }
 
-dependencyUpdates.resolutionStrategy {
-  componentSelection { rules ->
-    rules.all { ComponentSelection selection ->
-      boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'snapshot', 'final'].any { qualifier ->
-        selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.?\d-]?.*/
-      }
+task acceptanceTest(type: Test) {
+    useJUnitPlatform()
+    description = 'Runs acceptance tests.'
+    group = 'verification'
 
-      if (rejected) {
-        selection.reject('Release candidate')
-      }
-    }
-  }
+    testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
+    classpath += sourceSets.acceptanceTest.runtimeClasspath
 }
 
-test {
-	testLogging {
-		events "passed", "skipped", "failed"
-		outputs.upToDateWhen { false }
-		showStandardStreams = true
-	}
-}
-
-def qualityChecks = new File("${devopsGradleDir}/qualityChecks.gradle")
-def publishArtifacts = new File("${devopsGradleDir}/publishArtifacts.gradle")
 def sonarQube = new File("${devopsGradleDir}/sonarQube.gradle")
 def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
 
-if (qualityChecks.exists()) apply from: qualityChecks
 if (sonarQube.exists()) apply from: sonarQube
-if (publishArtifacts.exists()) apply from: publishArtifacts
 if (securityScan.exists()) apply from: securityScan
-
-tasks.withType(Test).configureEach {
-    jvmArgs(["--add-opens=java.base/java.lang=ALL-UNNAMED",
-             "--add-opens=java.base/java.util=ALL-UNNAMED"])
-}
