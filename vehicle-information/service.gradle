@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 buildscript {
 	repositories {
 		maven {
@@ -14,12 +16,11 @@ buildscript {
 	}
 }
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/java/common.gradle'
 
 group = projectGroup
-sourceCompatibility = 11
-
 version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
 
 bootJar {
   mainClassName = "$projectMainClass"
