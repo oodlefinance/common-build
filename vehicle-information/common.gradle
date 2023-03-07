@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'groovy'
 
 sourceCompatibility = JavaVersion.valueOf(javaVersion)
@@ -44,16 +46,6 @@ configurations {
   configurations.testImplementation.canBeResolved = true
   configurations.testRuntimeOnly.canBeResolved = true
   configurations.runtimeOnly.canBeResolved = true
-}
-
-task integrationTest(type: Test) {
-    useJUnitPlatform()
-    dependsOn bootJar
-    description = 'Runs integration tests.'
-    group = 'verification'
-
-    testClassesDirs = sourceSets.intTest.output.classesDirs
-    classpath += sourceSets.intTest.runtimeClasspath
 }
 
 task acceptanceTest(type: Test) {
