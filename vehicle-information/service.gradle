@@ -1,0 +1,31 @@
+apply plugin: 'application'
+
+buildscript {
+	repositories {
+		maven {
+			url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+			credentials {
+				username "${codeartifactUser}"
+				password "${codeartifactToken}"
+			}
+		}
+	}
+	dependencies {
+		classpath 'io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE'
+	}
+}
+
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/vehicle-information/common.gradle'
+
+group = projectGroup
+mainClassName = projectMainClass
+
+bootJar {
+    manifest {
+        attributes(
+                'Implementation-Version': project.version,
+                'Bundle-SymbolicName': project.group
+        )
+    }
+    archiveFileName = "${rootProject.name.toLowerCase()}.jar"
+}

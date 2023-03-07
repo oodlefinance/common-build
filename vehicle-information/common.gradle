@@ -1,0 +1,69 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'groovy'
+
+sourceCompatibility = JavaVersion.valueOf(javaVersion)
+
+ext {
+    artifactType = 'jar'
+    artifactName = "$projectName"
+    devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+}
+
+project.version = new SimpleDateFormat("'v'yyyyMMddHHmmss").format(new Date())
+
+
+sourceSets {
+  intTest {
+        groovy {
+            srcDir file('/src/intTest/groovy')
+            compileClasspath += main.output
+            runtimeClasspath += output + compileClasspath
+        }
+    }
+
+    acceptanceTest {
+        groovy {
+            srcDir file('/src/acceptanceTest/groovy')
+            compileClasspath += main.output + test.output + configurations.testRuntimeOnly + configurations.testImplementation
+            runtimeClasspath += output + compileClasspath
+        }
+    }
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+		credentials {
+			username "${codeartifactUser}"
+			password "${codeartifactToken}"
+		}
+	}
+}
+
+configurations {
+  configurations.testImplementation.canBeResolved = true
+  configurations.testRuntimeOnly.canBeResolved = true
+  configurations.runtimeOnly.canBeResolved = true
+}
+
+task acceptanceTest(type: Test) {
+    useJUnitPlatform()
+    description = 'Runs acceptance tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
+    classpath += sourceSets.acceptanceTest.runtimeClasspath
+}
+
+def sonarQube = new File("${devopsGradleDir}/sonarQube.gradle")
+def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
+
+if (sonarQube.exists()) apply from: sonarQube
+if (securityScan.exists()) apply from: securityScan
+
+tasks.withType(Test).configureEach {
+    jvmArgs(["--add-opens=java.base/java.lang=ALL-UNNAMED",
+             "--add-opens=java.base/java.util=ALL-UNNAMED"])
+}

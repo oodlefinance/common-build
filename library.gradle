@@ -1,7 +1,0 @@
-apply plugin: 'java-library'
-
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/common.gradle'
-
-group = projectGroup
-
-version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"

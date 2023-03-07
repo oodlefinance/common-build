@@ -1,0 +1,7 @@
+apply plugin: 'java-library'
+
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/vehicle-information/common.gradle'
+
+group = projectGroup
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
+version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
