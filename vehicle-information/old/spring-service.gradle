@@ -1,0 +1,34 @@
+buildscript {
+	repositories {
+		maven {
+			url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+			credentials {
+				username "${codeartifactUser}"
+				password "${codeartifactToken}"
+			}
+		}
+	}
+	dependencies {
+		classpath 'io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.7.4'
+	}
+}
+
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/common.gradle'
+
+group = projectGroup
+sourceCompatibility = 11
+
+version = "${System.getenv('BRANCH_NAME')}-${System.getenv('BUILD_NUMBER')}"
+
+bootJar {
+  mainClassName = "$projectMainClass"
+	archiveName = "$projectName-$projectVersion-fat.jar"
+	manifest {
+		attributes(
+						'Implementation-Version': project.version,
+						'Bundle-SymbolicName': project.group,
+						'Git-commit-hash': "git rev-parse --verify HEAD".execute().text.trim()
+		)
+	}
+}
