@@ -14,7 +14,7 @@ buildscript {
 	}
 }
 
-apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/common.gradle'
+apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/vehicle-information/old/common.gradle'
 
 group = projectGroup
 sourceCompatibility = 11
