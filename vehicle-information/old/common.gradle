@@ -1,0 +1,113 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'distribution'
+
+group = projectGroup
+version = version ?: '1.0.0'
+archivesBaseName = projectName
+sourceCompatibility = 1.11
+jar.baseName = projectName
+
+ext {
+	artifactName = "$projectName"
+	devopsGradleDir = "${rootDir}/oodle-devops/gradle"
+}
+
+sourceSets {
+  acceptanceTest {
+    groovy {
+      srcDir file('/src/acceptanceTest/groovy')
+      compileClasspath += main.output + test.output + configurations.testRuntime
+      runtimeClasspath += output + compileClasspath
+    }
+  }
+
+  integrationTest {
+    groovy {
+      srcDir file('/src/integrationTest/groovy')
+      compileClasspath += main.output + test.output + configurations.testRuntime
+      runtimeClasspath += output + compileClasspath
+    }
+  }
+}
+
+distributions {
+  main {
+    contents {
+      from configurations.runtime.allArtifacts.files
+      from configurations.runtime
+    }
+  }
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+		credentials {
+			username "${codeartifactUser}"
+			password "${codeartifactToken}"
+		}
+	}
+}
+
+configurations {
+  compile {
+    exclude group: "org.springframework", module: "spring-jcl"
+  }
+  all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 5, 'minutes'
+  }
+  acceptanceTestCompile.extendsFrom testImplementation
+  acceptanceTestRuntime.extendsFrom testRuntime
+  integrationTestCompile.extendsFrom testImplementation
+  integrationTestRuntime.extendsFrom testRuntime
+}
+
+task acceptanceTest(type: Test, group: 'verification') {
+  testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
+  classpath = sourceSets.acceptanceTest.runtimeClasspath
+  include '**/*'
+  outputs.upToDateWhen { false }
+}
+
+task integrationTest(type: Test) {
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  include '**/*'
+  outputs.upToDateWhen { false }
+}
+
+dependencyUpdates.resolutionStrategy {
+  componentSelection { rules ->
+    rules.all { ComponentSelection selection ->
+      boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'snapshot', 'final'].any { qualifier ->
+        selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.?\d-]?.*/
+      }
+
+      if (rejected) {
+        selection.reject('Release candidate')
+      }
+    }
+  }
+}
+
+test {
+	testLogging {
+		events "passed", "skipped", "failed"
+		outputs.upToDateWhen { false }
+		showStandardStreams = true
+	}
+}
+
+def qualityChecks = new File("${devopsGradleDir}/qualityChecks.gradle")
+def publishArtifacts = new File("${devopsGradleDir}/publishArtifacts.gradle")
+def sonarQube = new File("${devopsGradleDir}/sonarQube.gradle")
+def securityScan = new File("${devopsGradleDir}/securityScan.gradle")
+
+if (qualityChecks.exists()) apply from: qualityChecks
+if (sonarQube.exists()) apply from: sonarQube
+if (publishArtifacts.exists()) apply from: publishArtifacts
+if (securityScan.exists()) apply from: securityScan
