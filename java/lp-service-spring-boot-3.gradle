@@ -15,7 +15,7 @@ buildscript {
         // Versions for dependencies included in this script
         lpBomVersion = '1.+'
         lombokVersion = '1.+'
-        oodleLoggingVersion = '2.+'
+        oodleLoggingVersion = '3.+'
         logstashEncoderVersion = '7.+'
     }
     // Repository block for sourcing plugins
