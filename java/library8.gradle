@@ -1,0 +1,8 @@
+apply plugin: 'java-library'
+
+//apply from: 'https://raw.githubusercontent.com/oodlefinance/common-build/main/java/common.gradle'
+apply from: 'file:/Users/simon.dawe/dev/common-build/java/common8.gradle'
+
+group = projectGroup
+sourceCompatibility = JavaVersion.valueOf('VERSION_17')
+version = "$projectMajorVersion.$projectMinorVersion.$buildNumber"
