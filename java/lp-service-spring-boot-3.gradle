@@ -29,7 +29,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.2.2"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "org.owasp:dependency-check-gradle:${dependencyCheckVersion}"
         classpath "com.github.ben-manes:gradle-versions-plugin:${versionsPluginVersion}"
     }
