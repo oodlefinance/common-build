@@ -1,0 +1,67 @@
+// Shared gradle script for java services using spring boot 3.x and dependency locking
+// Based on:
+apply from: 'lp-service.gradle'
+// But with additional config for a second test task - integrationTest, using src/intTest
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    intTestImplementation.extendsFrom testImplementation
+    intTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+sourceSets {
+    main {
+        java.srcDirs += 'src/main/java'
+        kotlin.srcDirs += 'src/main/kotlin'
+    }
+    test {
+        java.srcDirs += 'src/test/java'
+        kotlin.srcDirs += 'src/test/kotlin'
+    }
+    intTest {
+        java.srcDir "$projectDir/src/intTest/java"
+        kotlin.srcDir "$projectDir/src/intTest/kotlin"
+        resources.srcDir file('src/main/resources')
+        resources.srcDir file('src/intTest/resources')
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
+task integrationTest(type: Test) {
+    dependsOn bootJar
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+}
+
+tasks.named('integrationTest') {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+    systemProperty 'spring.profiles.active', 'intTest'
+    environment "TESTCONTAINERS_CHECKS_DISABLE", "true" // Speeds up startup and prevents macOS issue with freezing container
+}
+
+processIntTestResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+jacocoTestReport {
+    // Jacoco config to ensure coverage from integration tests are included
+    dependsOn test, integrationTest
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    executionData fileTree(dir: "$buildDir/jacoco", include: "**/*.exec") // Include all JaCoCo execution data
+}
