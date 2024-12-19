@@ -7,4 +7,7 @@ on:
 
 jobs:
   create-tag:
-    uses: oodlefinance/github-actions/.github/workflows/create-timestamp-tag.yaml@main
+    # Note: The below workflow is a copy of the one in the oodlefinance/github-actions repo.
+    # This is due to common-build being a public repository (needed for external access of the build files)
+    # and github-actions being a private one - see https://docs.github.com/en/actions/sharing-automations/reusing-workflows#access-to-reusable-workflows
+    uses: ./.github/workflows/create-timestamp-tag.yaml
