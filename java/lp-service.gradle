@@ -1,0 +1,110 @@
+// Shared gradle script for java services using spring boot 3.x and dependency locking
+
+import java.text.SimpleDateFormat
+
+println 'Project using lp-service script as of ' + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())
+
+buildscript {
+    ext {
+        springBootVersion = '3.+' // Version used for framework dependencies
+        // Plugin versions
+        dependencyCheckVersion = '7.+'
+        versionsPluginVersion = '+'
+        // Versions for dependencies included in this script
+        lpBomVersion = '1.+'
+        lombokVersion = '1.+'
+        oodleLoggingVersion = '3.+'
+        logstashEncoderVersion = '7.+'
+    }
+    // Repository block for sourcing plugins
+    repositories {
+        maven {
+            url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+            credentials {
+                username "${codeartifactUser}"
+                password "${codeartifactToken}"
+            }
+        }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.3.4"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+// In order to provide plugins for other projects sourcing this script, we must specify the plugins by type
+// See https://blog.mrhaki.com/2015/10/gradle-goodness-apply-external-script.html
+apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
+apply plugin: org.sonarqube.gradle.SonarQubePlugin
+
+// Repository block for sourcing dependencies
+repositories {
+    maven {
+        url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+        credentials {
+            username "${codeartifactUser}"
+            password "${codeartifactToken}"
+        }
+    }
+}
+
+dependencyLocking {
+    // Enable locking of dependency versions using '--write-locks' to generate a `gradle.lockfile`
+    lockAllConfigurations()
+}
+
+dependencies {
+    implementation platform("com.oodlefinance.loanprocessing:lp-service-bom:${lpBomVersion}")
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashEncoderVersion}"
+    implementation "com.oodlefinance:logging:${oodleLoggingVersion}"
+
+}
+
+sourceCompatibility = JavaVersion.valueOf(javaVersion)
+
+// Use the PROJECT_VERSION var if set (EG by CI), or fall back to current timestamp
+project.version = System.getenv('PROJECT_VERSION') ?:
+        new SimpleDateFormat("'v'yyyyMMddHHmmss").format(new Date())
+
+
+configurations {
+    // Exclude snakeyaml entirely - we're not parsing yaml and we see repeated security issues with it
+    all*.exclude group: 'org.yaml', module:'snakeyaml'
+}
+
+bootJar {
+    archiveFileName = "${rootProject.name.toLowerCase()}.jar"
+    manifest {
+        attributes(
+                'Implementation-Version': project.version,
+                'Bundle-SymbolicName': project.group,
+                'Git-commit-hash': "git rev-parse --verify HEAD".execute().text.trim()
+        )
+    }
+}
+
+sonar {
+    properties {
+        property 'sonar.organization', "${sonarOrganization}"
+        property "sonar.host.url", "${sonarHost}"
+        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.destination
+    }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'spring.profiles.active', 'test'
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
