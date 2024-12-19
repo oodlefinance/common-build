@@ -1,0 +1,34 @@
+name: Generate Timestamp and Tag Repository
+
+on:
+  workflow_call:
+    outputs:
+      tag:
+        value: ${{ jobs.create-tag.outputs.tag }}
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.generate.outputs.tag }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Generate timestamp tag
+        id: generate
+        run: echo "tag=v$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Tag Repository
+        env:
+          TAG: ${{ steps.generate.outputs.tag }}
+        run: |
+          git tag $TAG
+          git push origin $TAG
