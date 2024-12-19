@@ -1,0 +1,10 @@
+name: Push to main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-tag:
+    uses: oodlefinance/github-actions/.github/workflows/create-timestamp-tag.yaml@main
