@@ -1,8 +1,7 @@
 // Shared gradle script for java services using spring boot 3.x and dependency locking
+// with additional config for a second test task - integrationTest, using src/intTest
 
 import java.text.SimpleDateFormat
-
-println 'Project using lp-service script as of ' + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())
 
 buildscript {
     ext {
@@ -78,6 +77,12 @@ project.version = System.getenv('PROJECT_VERSION') ?:
 
 
 configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    intTestImplementation.extendsFrom testImplementation
+    intTestRuntimeOnly.extendsFrom testRuntimeOnly
     // Exclude snakeyaml entirely - we're not parsing yaml and we see repeated security issues with it
     all*.exclude group: 'org.yaml', module:'snakeyaml'
 }
@@ -93,18 +98,69 @@ bootJar {
     }
 }
 
-sonar {
-    properties {
-        property 'sonar.organization', "${sonarOrganization}"
-        property "sonar.host.url", "${sonarHost}"
-        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.destination
-    }
-}
-
 test {
     useJUnitPlatform()
     systemProperty 'spring.profiles.active', 'test'
     testLogging {
         events "passed", "skipped", "failed"
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDirs += 'src/main/java'
+    }
+    test {
+        java.srcDirs += 'src/test/java'
+    }
+    intTest {
+        java.srcDir "$projectDir/src/intTest/java"
+        resources.srcDir file('src/main/resources')
+        resources.srcDir file('src/intTest/resources')
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
+task integrationTest(type: Test) {
+    dependsOn bootJar
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+}
+
+tasks.named('integrationTest') {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+    systemProperty 'spring.profiles.active', 'intTest'
+    environment "TESTCONTAINERS_CHECKS_DISABLE", "true" // Speeds up startup and prevents macOS issue with freezing container
+}
+
+processIntTestResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+jacocoTestReport {
+    // Jacoco config to ensure coverage from integration tests are included
+    dependsOn test, integrationTest
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    executionData fileTree(dir: "$buildDir/jacoco", include: "**/*.exec") // Include all JaCoCo execution data
+}
+
+sonar {
+    properties {
+        property 'sonar.organization', "${sonarOrganization}"
+        property "sonar.host.url", "${sonarHost}"
+        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.destination
     }
 }
