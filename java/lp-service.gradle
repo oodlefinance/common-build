@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 
 buildscript {
     ext {
-        springBootVersion = '3.+' // Version used for framework dependencies
+        springBootVersion = '[3.0.0,3.3.999]' // Version used for gradle plugin AND framework dependencies ; TODO [3.0.0,3.3.999] is added to avoid the latest version 3.4.0 is incompatible with some of our services. This needs to be reverted once we resolve the issues
         // Plugin versions
         dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
