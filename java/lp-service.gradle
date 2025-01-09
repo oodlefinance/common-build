@@ -18,10 +18,10 @@ buildscript {
     // Repository block for sourcing plugins
     repositories {
         maven {
-            url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+            url = "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
             credentials {
-                username "${codeartifactUser}"
-                password "${codeartifactToken}"
+                username = "${codeartifactUser}"
+                password = "${codeartifactToken}"
             }
         }
     }
@@ -41,10 +41,10 @@ apply plugin: org.sonarqube.gradle.SonarQubePlugin
 // Repository block for sourcing dependencies
 repositories {
     maven {
-        url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+        url = "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
         credentials {
-            username "${codeartifactUser}"
-            password "${codeartifactToken}"
+            username = "${codeartifactUser}"
+            password = "${codeartifactToken}"
         }
     }
 }
@@ -69,7 +69,7 @@ dependencies {
 
 }
 
-sourceCompatibility = JavaVersion.valueOf(javaVersion)
+sourceCompatibility = javaVersion
 
 // Use the PROJECT_VERSION var if set (EG by CI), or fall back to current timestamp
 project.version = System.getenv('PROJECT_VERSION') ?:
