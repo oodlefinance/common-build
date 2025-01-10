@@ -69,7 +69,11 @@ dependencies {
 
 }
 
-sourceCompatibility = javaVersion
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+}
 
 // Use the PROJECT_VERSION var if set (EG by CI), or fall back to current timestamp
 project.version = System.getenv('PROJECT_VERSION') ?:
