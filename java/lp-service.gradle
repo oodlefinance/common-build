@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 
 buildscript {
     ext {
-        springBootVersion = '[3.0.0,3.3.999]' // Version used for gradle plugin AND framework dependencies ; TODO [3.0.0,3.3.999] is added to avoid the latest version 3.4.0 is incompatible with some of our services. This needs to be reverted once we resolve the issues
+        springBootVersion = '3.+' // Version used for framework dependencies
         // Plugin versions
         dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
@@ -18,16 +18,16 @@ buildscript {
     // Repository block for sourcing plugins
     repositories {
         maven {
-            url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+            url = "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
             credentials {
-                username "${codeartifactUser}"
-                password "${codeartifactToken}"
+                username = "${codeartifactUser}"
+                password = "${codeartifactToken}"
             }
         }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.3.4"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.4.1"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.0.1.5171"
     }
 }
 
@@ -41,10 +41,10 @@ apply plugin: org.sonarqube.gradle.SonarQubePlugin
 // Repository block for sourcing dependencies
 repositories {
     maven {
-        url "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
+        url = "https://${codeartifactDomain}-${awsBuildAccountId}.d.codeartifact.eu-west-1.amazonaws.com/maven/oodle-maven-repo/"
         credentials {
-            username "${codeartifactUser}"
-            password "${codeartifactToken}"
+            username = "${codeartifactUser}"
+            password = "${codeartifactToken}"
         }
     }
 }
@@ -69,7 +69,11 @@ dependencies {
 
 }
 
-sourceCompatibility = JavaVersion.valueOf(javaVersion)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+}
 
 // Use the PROJECT_VERSION var if set (EG by CI), or fall back to current timestamp
 project.version = System.getenv('PROJECT_VERSION') ?:
@@ -161,6 +165,6 @@ sonar {
     properties {
         property 'sonar.organization', "${sonarOrganization}"
         property "sonar.host.url", "${sonarHost}"
-        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.destination
+        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.outputLocation.get().asFile.absolutePath
     }
 }
