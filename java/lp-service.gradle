@@ -145,13 +145,13 @@ tasks.named('integrationTest') {
     environment "TESTCONTAINERS_CHECKS_DISABLE", "true" // Speeds up startup and prevents macOS issue with freezing container
 }
 
-tasks.named('processIntTestResources') {
+processIntegrationTestResources {
     from sourceSets.integrationTest.resources
     into "$buildDir/resources/intTest"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-processIntTestResources.dependsOn processResources
+processIntegrationTestResources.dependsOn processResources
 
 jacocoTestReport {
     // Jacoco config to ensure coverage from integration tests are included
