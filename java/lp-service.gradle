@@ -146,6 +146,8 @@ tasks.named('integrationTest') {
 }
 
 tasks.named('processIntTestResources') {
+    from sourceSets.integrationTest.resources
+    into "$buildDir/resources/intTest"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
