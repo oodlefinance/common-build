@@ -117,7 +117,7 @@ sourceSets {
     test {
         java.srcDirs += 'src/test/java'
     }
-    intTest {
+    integrationTest {
         java.srcDir "$projectDir/src/intTest/java"
         resources.srcDir file('src/main/resources')
         resources.srcDir file('src/intTest/resources')
@@ -131,8 +131,8 @@ task integrationTest(type: Test) {
     description = 'Runs integration tests.'
     group = 'verification'
 
-    testClassesDirs = sourceSets.intTest.output.classesDirs
-    classpath = sourceSets.intTest.runtimeClasspath
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
 tasks.named('integrationTest') {
@@ -145,9 +145,11 @@ tasks.named('integrationTest') {
     environment "TESTCONTAINERS_CHECKS_DISABLE", "true" // Speeds up startup and prevents macOS issue with freezing container
 }
 
-processIntTestResources {
+tasks.named('processIntTestResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+processIntTestResources.dependsOn processResources
 
 jacocoTestReport {
     // Jacoco config to ensure coverage from integration tests are included
