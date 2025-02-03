@@ -166,5 +166,6 @@ sonar {
         property 'sonar.organization', "${sonarOrganization}"
         property "sonar.host.url", "${sonarHost}"
         property 'sonar.coverage.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.outputLocation.get().asFile.absolutePath
+        property 'sonar.automaticAnalysis.enabled', 'false'
     }
 }
