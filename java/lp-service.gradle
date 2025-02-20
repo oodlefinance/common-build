@@ -143,6 +143,11 @@ tasks.named('integrationTest') {
     }
     systemProperty 'spring.profiles.active', 'intTest'
     environment "TESTCONTAINERS_CHECKS_DISABLE", "true" // Speeds up startup and prevents macOS issue with freezing container
+    environment "TESTCONTAINERS_REUSE_ENABLE", "true" // Reuse containers between tests when they're configured `withReuse`
+}
+
+task cleanContainers(type: Exec) {
+    commandLine 'sh', '-c', 'docker rm -f $(docker ps -aq --filter "label=org.testcontainers")'
 }
 
 processIntTestResources {
