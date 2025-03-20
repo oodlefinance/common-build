@@ -1,14 +1,7 @@
 // Shared gradle script for java services using spring boot 3.x and dependency locking
 // with additional config for a second test task - integrationTest, using src/intTest
 
-import java.nio.file.Files
 import java.text.SimpleDateFormat
-import java.util.jar.JarFile
-import java.util.zip.CRC32
-import java.util.jar.JarOutputStream
-import java.util.jar.JarEntry
-import java.util.zip.ZipEntry
-import org.gradle.api.artifacts.transform.TransformParameters
 
 buildscript {
     ext {
@@ -159,62 +152,6 @@ task cleanContainers(type: Exec) {
 
 processIntTestResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-/**
- * Our fat jar includes nested jars in BOOT-INF/lib. This transform will extract the nested jars,
- * remove META-INF/maven/, and then repackage the jar.
- * This is necessary to avoid AWS Inspector triggering on dependencies listed in those maven files -
- * We'd rather inspector only check the third-party code actually included as a nested jar.
- *
- * A better solution to this issue might be to split up our fat jar into multiple layers,
- * which might help us define an inspector suppression rule more easily.
- */
-abstract class RemoveMavenMetaInfTransform implements TransformAction<TransformParameters.None> {
-    @InputArtifact
-    abstract Provider<FileSystemLocation> getInputArtifact()
-
-    @Override
-    void transform(TransformOutputs outputs) {
-        File inputJar = getInputArtifact().get().asFile
-        File outputJar = outputs.file("cleaned-${inputJar.name}")
-        println "Removing META-INF/maven from ${inputJar.name}"
-        def jarFile = new JarFile(inputJar)
-        outputJar.withOutputStream { os ->
-            def jos = new JarOutputStream(os)
-            jarFile.entries().each { entry ->
-                if (!entry.name.startsWith("META-INF/maven/")) {
-                    byte[] entryBytes = jarFile.getInputStream(entry).bytes
-                    def newEntry = new JarEntry(entry.name)
-                    newEntry.method = ZipEntry.DEFLATED
-                    newEntry.size = entryBytes.length
-                    def crc = new CRC32()
-                    crc.update(entryBytes)
-                    newEntry.crc = crc.value
-                    jos.putNextEntry(newEntry)
-                    jos.write(entryBytes)
-                    jos.closeEntry()
-                }
-            }
-            jos.close()
-        }
-        jarFile.close()
-    }
-}
-
-dependencies {
-    registerTransform(RemoveMavenMetaInfTransform) {
-        from.attribute(Attribute.of("artifactType", String), "jar")
-        to.attribute(Attribute.of("artifactType", String), "cleaned-jar")
-    }
-}
-
-configurations {
-    runtimeClasspath {
-        attributes {
-            attribute(Attribute.of("artifactType", String), "cleaned-jar")
-        }
-    }
 }
 
 jacocoTestReport {
