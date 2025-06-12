@@ -87,8 +87,6 @@ configurations {
     }
     intTestImplementation.extendsFrom testImplementation
     intTestRuntimeOnly.extendsFrom testRuntimeOnly
-    // Exclude snakeyaml entirely - we're not parsing yaml and we see repeated security issues with it
-    all*.exclude group: 'org.yaml', module:'snakeyaml'
 }
 
 bootJar {
