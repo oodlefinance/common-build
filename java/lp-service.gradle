@@ -5,14 +5,14 @@ import java.text.SimpleDateFormat
 
 buildscript {
     ext {
-        springBootVersion = '3.+' // Version used for framework dependencies
+        springBootVersion = '4.0.+' // Version used for framework dependencies
         // Plugin versions
         dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
         // Versions for dependencies included in this script
         lpBomVersion = '1.+'
         lombokVersion = '1.+'
-        oodleLoggingVersion = '3.+'
+        oodleLoggingVersion = '4.0.1'
         logstashEncoderVersion = '7.+'
         commonsLang3Version = '3.+' // CVE-2025-48924
     }
