@@ -24,6 +24,9 @@ buildscript {
                 username = "${codeartifactUser}"
                 password = "${codeartifactToken}"
             }
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
     dependencies {
@@ -46,6 +49,9 @@ repositories {
         credentials {
             username = "${codeartifactUser}"
             password = "${codeartifactToken}"
+        }
+        authentication {
+            basic(BasicAuthentication)
         }
     }
 }
