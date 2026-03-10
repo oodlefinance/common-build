@@ -1,18 +1,18 @@
-// Shared gradle script for java services using spring boot 3.x and dependency locking
+// Shared gradle script for java services using spring boot 4.0.x and dependency locking
 // with additional config for a second test task - integrationTest, using src/intTest
 
 import java.text.SimpleDateFormat
 
 buildscript {
     ext {
-        springBootVersion = '3.+' // Version used for framework dependencies
+        springBootVersion = '4.0.+' // Version used for framework dependencies
         // Plugin versions
         dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
         // Versions for dependencies included in this script
         lpBomVersion = '1.+'
         lombokVersion = '1.+'
-        oodleLoggingVersion = '3.+'
+        oodleLoggingVersion = '4.0.1'
         logstashEncoderVersion = '7.+'
         commonsLang3Version = '3.+' // CVE-2025-48924
     }
@@ -27,7 +27,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.4.1"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.0.1.5171"
     }
 }
@@ -81,6 +81,21 @@ java {
 project.version = System.getenv('PROJECT_VERSION') ?:
         new SimpleDateFormat("'v'yyyyMMddHHmmss").format(new Date())
 
+sourceSets {
+    main {
+        java.srcDirs += 'src/main/java'
+    }
+    test {
+        java.srcDirs += 'src/test/java'
+    }
+    intTest {
+        java.srcDir "$projectDir/src/intTest/java"
+        resources.srcDir file('src/main/resources')
+        resources.srcDir file('src/intTest/resources')
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
 
 configurations {
     developmentOnly
@@ -107,22 +122,6 @@ test {
     systemProperty 'spring.profiles.active', 'test'
     testLogging {
         events "passed", "skipped", "failed"
-    }
-}
-
-sourceSets {
-    main {
-        java.srcDirs += 'src/main/java'
-    }
-    test {
-        java.srcDirs += 'src/test/java'
-    }
-    intTest {
-        java.srcDir "$projectDir/src/intTest/java"
-        resources.srcDir file('src/main/resources')
-        resources.srcDir file('src/intTest/resources')
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
     }
 }
 
