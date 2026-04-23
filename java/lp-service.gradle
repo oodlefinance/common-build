@@ -10,7 +10,7 @@ buildscript {
         dependencyCheckVersion = '7.+'
         versionsPluginVersion = '+'
         // Versions for dependencies included in this script
-        lpBomVersion = '1.+'
+        lpBomVersion = '1.1.+'
         lombokVersion = '1.+'
         oodleLoggingVersion = '4.0.1'
         logstashEncoderVersion = '7.+'
