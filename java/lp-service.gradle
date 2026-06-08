@@ -12,7 +12,7 @@ buildscript {
         // Versions for dependencies included in this script
         lpBomVersion = '1.1.+'
         lombokVersion = '1.+'
-        oodleLoggingVersion = '4.0.2'
+        oodleLoggingVersion = '4.0.+'
         logstashEncoderVersion = '7.+'
         commonsLang3Version = '3.+' // CVE-2025-48924
     }
