@@ -15,6 +15,8 @@ buildscript {
         oodleLoggingVersion = '4.0.+'
         logstashEncoderVersion = '7.+'
         commonsLang3Version = '3.+' // CVE-2025-48924
+        logbackCoreVersion = '1.5.+' // CVE-2026-10532
+        jacksonDatabindVersion = '2.+' // CVE-2026-54515
     }
     // Repository block for sourcing plugins
     repositories {
@@ -68,6 +70,9 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashEncoderVersion}"
     implementation "com.oodlefinance:logging:${oodleLoggingVersion}"
     implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    implementation "ch.qos.logback:logback-core:${logbackCoreVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackCoreVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
 
 }
 
