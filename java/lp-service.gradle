@@ -71,6 +71,7 @@ dependencies {
     implementation "com.oodlefinance:logging:${oodleLoggingVersion}"
     implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
     implementation "ch.qos.logback:logback-core:${logbackCoreVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackCoreVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
 
 }
