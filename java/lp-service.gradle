@@ -16,7 +16,8 @@ buildscript {
         logstashEncoderVersion = '7.+'
         commonsLang3Version = '3.+' // CVE-2025-48924
         logbackCoreVersion = '1.5.+' // CVE-2026-10532
-        jacksonDatabindVersion = '2.+' // CVE-2026-54515
+        jacksonDatabindVersion = '2.22.3+' // CVE-2026-91777
+        jackson3DatabindVersion = '3.1.7+' // CVE-2026-91777
     }
     // Repository block for sourcing plugins
     repositories {
@@ -73,6 +74,7 @@ dependencies {
     implementation "ch.qos.logback:logback-core:${logbackCoreVersion}"
     implementation "ch.qos.logback:logback-classic:${logbackCoreVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+    implementation "tools.jackson.core:jackson-databind:${jackson3DatabindVersion}"
 
 }
 
